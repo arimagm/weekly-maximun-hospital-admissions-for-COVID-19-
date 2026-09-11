@@ -878,32 +878,31 @@ postscript("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de val
            horizontal = FALSE
 )
 par(mfrow = c(3, 3))
-
-plot(seq(1,10000,1), loc1_sill,type = "n",xlab=" ",ylab=" ", main=expression(sigma[eta]))
+plot(seq(1,10000,1), loc1_sill,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(sigma[eta]))
 lines(loc1_sill,col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),  loc1_range,type = "n",xlab=" ",ylab=" ", main=expression(phi[eta]))
+plot(seq(1,10000,1),  loc1_range,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(phi[eta]))
 lines(loc1_range, col="darkblue",lwd=1)
 
-plot(seq(1,10000,1), loc1_smooth,type = "n",xlab=" ",ylab=" ", main=expression(kappa[eta]))
+plot(seq(1,10000,1), loc1_smooth,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(kappa[eta]))
 lines(loc1_smooth,col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),   scale1_sill,type = "n",xlab=" ",ylab=" ", main=expression(sigma[tau]))
+plot(seq(1,10000,1),   scale1_sill,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(sigma[tau]))
 lines(scale1_sill,  col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),  scale1_range,type = "n",xlab=" ",ylab=" ", main=expression(phi[tau]))
+plot(seq(1,10000,1),  scale1_range,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(phi[tau]))
 lines(scale1_range, col="darkblue",lwd=1)
 
-plot(seq(1,10000,1), scale1_smooth,type = "n",xlab=" ",ylab=" ", main=expression(kappa[tau]))
+plot(seq(1,10000,1), scale1_smooth,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(kappa[tau]))
 lines(scale1_smooth,col="darkblue",lwd=1)
 
-plot(seq(1,10000,1), shape1_sill,type = "n", xlab=" ",ylab=" ",   main=expression(sigma[xi]))
+plot(seq(1,10000,1), shape1_sill,type = "n", xlab=" ",ylab=" ",cex.main = 3,   main=expression(sigma[xi]))
 lines(shape1_sill,col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),  shape1_range,type = "n",xlab=" ",ylab=" ", main=expression(phi[xi]))
+plot(seq(1,10000,1),  shape1_range,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(phi[xi]))
 lines(shape1_range, col="darkblue",lwd=1)
 
-plot(seq(1,10000,1), shape1_smooth,type = "n",xlab=" ",ylab=" ", main=expression(kappa[xi]))
+plot(seq(1,10000,1), shape1_smooth,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(kappa[xi]))
 lines(shape1_smooth,col="darkblue",lwd=1)
 dev.off()
 
@@ -916,17 +915,17 @@ postscript("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de val
            horizontal = FALSE
 )
 par(mfrow = c(3, 3))
-hist(loc1_sill, col="darkblue", labcex = 1.3, xlab="", main=expression(sigma[eta]))
-hist(loc1_range,col="darkblue", xlab="", main=expression(phi[eta]))
-hist(loc1_smooth,col="darkblue",xlab="",main=expression(kappa[eta]))
+hist(loc1_sill, col="darkblue",  cex.main = 3, xlab="", main=expression(sigma[eta]))
+hist(loc1_range,col="darkblue", cex.main = 3,xlab="", main=expression(phi[eta]))
+hist(loc1_smooth,col="darkblue",cex.main = 3,xlab="",main=expression(kappa[eta]))
 
-hist(scale1_sill,col="darkblue", xlab="", main=expression(sigma[tau]))
-hist(scale1_range,col="darkblue",xlab="", main=expression(phi[tau]))
-hist(scale1_smooth,col="darkblue",xlab="",main=expression(kappa[tau]))
+hist(scale1_sill,col="darkblue", cex.main = 3,xlab="", main=expression(sigma[tau]))
+hist(scale1_range,col="darkblue",cex.main = 3,xlab="", main=expression(phi[tau]))
+hist(scale1_smooth,col="darkblue",cex.main = 3,xlab="",main=expression(kappa[tau]))
 
-hist(shape1_sill,col="darkblue", xlab="", main=expression(sigma[xi]))
-hist(shape1_range,col="darkblue",xlab="", main=expression(phi[xi]))
-hist(shape1_smooth,col="darkblue",xlab="",main=expression(kappa[xi]))
+hist(shape1_sill,col="darkblue", cex.main = 3,xlab="", main=expression(sigma[xi]))
+hist(shape1_range,col="darkblue",cex.main = 3,xlab="", main=expression(phi[xi]))
+hist(shape1_smooth,col="darkblue",cex.main = 3,xlab="",main=expression(kappa[xi]))
 dev.off()
 
 #------ Criterios estadísticos
@@ -981,6 +980,10 @@ filled.contour(
                 cex.lab = 0.9,
                 xlab = "Longitude",                    
                 ylab = "Latitude",  
+ key.axes = {
+    axis(4, cex.axis = 1.5) 
+  },
+  
 plot.axes = {
 
     ticks_x <- axTicks(1)
@@ -1000,6 +1003,9 @@ filled.contour(
   cex.lab = 0.9,
   xlab = "Longitude",                    
   ylab = "Latitude",  
+ key.axes = {
+    axis(4, cex.axis = 1.5) 
+  },
   plot.axes = {
      ticks_x <- axTicks(1)
     ticks_y <- axTicks(2)
@@ -1017,6 +1023,9 @@ filled.contour(
   cex.lab =0.9,
   xlab = "Longitude",                    
   ylab = "Latitude",  
+ key.axes = {
+    axis(4, cex.axis = 1.5) 
+  },
   plot.axes = {
     ticks_x <- axTicks(1)
     ticks_y <- axTicks(2)
