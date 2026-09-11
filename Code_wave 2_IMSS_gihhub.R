@@ -916,7 +916,7 @@ postscript("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de val
            horizontal = FALSE
 )
 par(mfrow = c(3, 3))
-hist(loc1_sill, col="darkblue", cex = 5, xlab="", main=expression(sigma[eta]))
+hist(loc1_sill, col="darkblue", labcex = 1.3, xlab="", main=expression(sigma[eta]))
 hist(loc1_range,col="darkblue", xlab="", main=expression(phi[eta]))
 hist(loc1_smooth,col="darkblue",xlab="",main=expression(kappa[eta]))
 
@@ -987,7 +987,7 @@ plot.axes = {
     ticks_y <- axTicks(2)
     axis(1, at = ticks_x, labels = paste0(abs(ticks_x), "°W"), cex.axis = 0.8)
     axis(2, at = ticks_y, labels = paste0(ticks_y, "°N"), cex.axis = 0.8)
-    contour(x.grid, y.grid, intervalo_inferior, add = TRUE, col = "black", lwd = 2)
+    contour(x.grid, y.grid, intervalo_inferior, add = TRUE, col = "black", lwd = 2,labcex = 1.5)
   } 
 )
 
@@ -1005,7 +1005,7 @@ filled.contour(
     ticks_y <- axTicks(2)
     axis(1, at = ticks_x, labels = paste0(abs(ticks_x), "°W"), cex.axis = 0.8)
     axis(2, at = ticks_y, labels = paste0(ticks_y, "°N"), cex.axis = 0.8)
-    contour(x.grid, y.grid, nivel_retorno_punto, add = TRUE, col = "black",lwd = 2)
+    contour(x.grid, y.grid, nivel_retorno_punto, add = TRUE, col = "black",lwd = 2,labcex = 1.5)
   }
 )
 
@@ -1022,7 +1022,7 @@ filled.contour(
     ticks_y <- axTicks(2)
     axis(1, at = ticks_x, labels = paste0(abs(ticks_x), "°W"), cex.axis = 0.8)
     axis(2, at = ticks_y, labels = paste0(ticks_y, "°N"), cex.axis = 0.8)
-    contour(x.grid, y.grid, intervalo_superior, add = TRUE,col = "black",cex = 8,
+    contour(x.grid, y.grid, intervalo_superior, add = TRUE,col = "black",cex = 8,labcex = 1.5,
 lwd = 2)
   }
 )
