@@ -590,7 +590,7 @@ start <- list(sills   = c(0.5, 0.5, 0.5),                    #  5 5 5
 set.seed(100)
 mc_sen1 <- latent(dat, 
               coord,                  #       
-              cov.mod="cauchy",       #  whitmat  cauchy  powexp bessel 
+              cov.mod="powexp",       #  whitmat  cauchy  powexp bessel 
               loc.form = loc.form, 
               scale.form = scale.form,
               shape.form = shape.form,
@@ -791,6 +791,7 @@ round(DIC(mc_sen2),3)
 #########################################
 
 mc1<- mc_sen1
+round(DIC(mc1),3)
 
 loc1_beta0  <-mc1$chain.loc[,1]
 loc1_beta1  <-mc1$chain.loc[,2]
@@ -906,33 +907,33 @@ postscript("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de val
            horizontal = FALSE
         )# .eps quita las curvas grices
 par(mfrow = c(3, 3))
-plot(seq(1,10000,1), loc1_sill,type = "n",xlab=" ",ylab=" ", main=expression(sigma[eta]))
+plot(seq(1,10000,1), loc1_sill,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(sigma[eta]))
 lines(loc1_sill,col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),  loc1_range,type = "n",xlab=" ",ylab=" ", main=expression(phi[eta]))
+plot(seq(1,10000,1),  loc1_range,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(phi[eta]))
 lines(loc1_range, col="darkblue",lwd=1)
 
-plot(seq(1,10000,1), loc1_smooth,type = "n",xlab=" ",ylab=" ", main=expression(kappa[eta]))
+plot(seq(1,10000,1), loc1_smooth,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(kappa[eta]))
 lines(loc1_smooth,col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),   scale1_sill,type = "n",xlab=" ",ylab=" ", main=expression(sigma[tau]))
+plot(seq(1,10000,1),   scale1_sill,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(sigma[tau]))
 lines(scale1_sill,  col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),  scale1_range, type = "n", xlab=" ",ylab=" ", main=expression(phi[tau]))
+plot(seq(1,10000,1),  scale1_range, type = "n", xlab=" ",ylab=" ",cex.main = 3, main=expression(phi[tau]))
 lines(scale1_range, col="darkblue",lwd=1)
 
-plot(x=seq(1,10000,1), scale1_smooth, type = "n",xlab=" ",ylab=" ", main=expression(kappa[tau]),
+plot(x=seq(1,10000,1), scale1_smooth, type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(kappa[tau]),
  ylim=c(min(scale1_smooth),max(scale1_smooth))
 )
 lines(scale1_smooth, col="darkblue",lwd=1)
 
-plot(seq(1,10000,1), shape1_sill,type = "n", xlab=" ",ylab=" ",   main=expression(sigma[xi]))
+plot(seq(1,10000,1), shape1_sill,type = "n", xlab=" ",ylab=" ",cex.main = 3,   main=expression(sigma[xi]))
 lines(shape1_sill,col="darkblue",lwd=1)
 
-plot(seq(1,10000,1),  shape1_range,type = "n",xlab=" ",ylab=" ", main=expression(phi[xi]))
+plot(seq(1,10000,1),  shape1_range,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(phi[xi]))
 lines(shape1_range, col="darkblue",lwd=1)
 
-plot(seq(1,10000,1), shape1_smooth,type = "n",xlab=" ",ylab=" ", main=expression(kappa[xi]))
+plot(seq(1,10000,1), shape1_smooth,type = "n",xlab=" ",ylab=" ",cex.main = 3, main=expression(kappa[xi]))
 lines(shape1_smooth,col="darkblue",lwd=1)
 dev.off() 
 
@@ -943,17 +944,17 @@ postscript("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de val
            horizontal = FALSE
         )# .eps quita las curvas grices
 par(mfrow = c(3, 3))
-hist(loc1_sill,  xlab="",col="darkblue", main=expression(sigma[eta]))
-hist(loc1_range, xlab="",col="darkblue", main=expression(phi[eta]))
-hist(loc1_smooth,xlab="",col="darkblue",main=expression(kappa[eta]))
+hist(loc1_sill,  xlab="",col="darkblue",cex.main = 3, main=expression(sigma[eta]))
+hist(loc1_range, xlab="",col="darkblue",cex.main = 3, main=expression(phi[eta]))
+hist(loc1_smooth,xlab="",col="darkblue",cex.main = 3,main=expression(kappa[eta]))
 
-hist(scale1_sill, xlab="",col="darkblue", main=expression(sigma[tau]))
-hist(scale1_range,xlab="",col="darkblue", main=expression(phi[tau]))
-hist(scale1_smooth,xlab="",col="darkblue",main=expression(kappa[tau]))
+hist(scale1_sill, xlab="",col="darkblue",cex.main = 3, main=expression(sigma[tau]))
+hist(scale1_range,xlab="",col="darkblue",cex.main = 3, main=expression(phi[tau]))
+hist(scale1_smooth,xlab="",col="darkblue",cex.main = 3,main=expression(kappa[tau]))
 
-hist(shape1_sill, xlab="",col="darkblue", main=expression(sigma[xi]))
-hist(shape1_range,xlab="",col="darkblue", main=expression(phi[xi]))
-hist(shape1_smooth,xlab="",col="darkblue",main=expression(kappa[xi]))
+hist(shape1_sill, xlab="",col="darkblue",cex.main = 3, main=expression(sigma[xi]))
+hist(shape1_range,xlab="",col="darkblue",cex.main = 3, main=expression(phi[xi]))
+hist(shape1_smooth,xlab="",col="darkblue",cex.main = 3,main=expression(kappa[xi]))
 dev.off() 
 
 
@@ -996,18 +997,27 @@ cortes_escala <- pretty(rango_global, n = 12)
 num_colores <- length(cortes_escala) - 1
 colores_continuos <- colorRampPalette(brewer.pal(9, "YlOrRd"))(num_colores)
 
-# 4. Configurar la pantalla para los 3 mapas lado a lado
 
 
 filled.contour(
-  x.grid, y.grid, intervalo_inferior, 
-  col = colores_continuos,
-  levels = cortes_escala, # Forzar los cortes limpios
-  plot.axes = {
-    axis(1)
-    axis(2)
-    contour(x.grid, y.grid, intervalo_inferior, add = TRUE)
-  }
+                x.grid, y.grid, intervalo_inferior, 
+                col = colores_continuos,
+                levels = cortes_escala, # Forzar los cortes limpios
+                cex.lab = 0.9,
+                xlab = "Longitude",                    
+                ylab = "Latitude",  
+ key.axes = {
+    axis(4, cex.axis = 1.5) 
+  },
+  
+plot.axes = {
+
+    ticks_x <- axTicks(1)
+    ticks_y <- axTicks(2)
+    axis(1, at = ticks_x, labels = paste0(abs(ticks_x), "°W"), cex.axis = 0.8)
+    axis(2, at = ticks_y, labels = paste0(ticks_y, "°N"), cex.axis = 0.8)
+    contour(x.grid, y.grid, intervalo_inferior, add = TRUE, col = "black", lwd = 2,labcex = 1.5)
+  } 
 )
 
 
@@ -1016,10 +1026,18 @@ filled.contour(
   x.grid, y.grid, nivel_retorno_punto, 
   col = colores_continuos,
   levels = cortes_escala,
+  cex.lab = 0.9,
+  xlab = "Longitude",                    
+  ylab = "Latitude",  
+ key.axes = {
+    axis(4, cex.axis = 1.5) 
+  },
   plot.axes = {
-    axis(1)
-    axis(2)
-    contour(x.grid, y.grid, nivel_retorno_punto, add = TRUE)
+     ticks_x <- axTicks(1)
+    ticks_y <- axTicks(2)
+    axis(1, at = ticks_x, labels = paste0(abs(ticks_x), "°W"), cex.axis = 0.8)
+    axis(2, at = ticks_y, labels = paste0(ticks_y, "°N"), cex.axis = 0.8)
+    contour(x.grid, y.grid, nivel_retorno_punto, add = TRUE, col = "black",lwd = 2,labcex = 1.5)
   }
 )
 
@@ -1028,11 +1046,19 @@ filled.contour(
   x.grid, y.grid, intervalo_superior, 
   col = colores_continuos,
   levels = cortes_escala,
+  cex.lab =0.9,
+  xlab = "Longitude",                    
+  ylab = "Latitude",  
+ key.axes = {
+    axis(4, cex.axis = 1.5) 
+  },
   plot.axes = {
-    axis(1)
-    axis(2)
-    contour(x.grid, y.grid, intervalo_superior, add = TRUE)
+    ticks_x <- axTicks(1)
+    ticks_y <- axTicks(2)
+    axis(1, at = ticks_x, labels = paste0(abs(ticks_x), "°W"), cex.axis = 0.8)
+    axis(2, at = ticks_y, labels = paste0(ticks_y, "°N"), cex.axis = 0.8)
+    contour(x.grid, y.grid, intervalo_superior, add = TRUE,col = "black",cex = 8,labcex = 1.5,
+lwd = 2)
   }
 )
-
 
