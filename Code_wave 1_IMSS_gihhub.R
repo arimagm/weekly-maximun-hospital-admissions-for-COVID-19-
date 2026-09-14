@@ -5,6 +5,7 @@ options(encoding="latin1")  #UTF-8
 
 ################## Valores extremos
 
+rm(list = ls())
 
 library(dplyr)
 library(readxl)
@@ -356,7 +357,7 @@ ggsave("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de valores
 ######################################
 # Pasar a formato ancho
 
-View(dat_hosp_imss)
+View(dat_hosp_imss)  # Datos para el análisis
 
 datos_anchos <- dat_hosp_imss[,c(3,4,6)] %>%
                 pivot_wider(
@@ -366,16 +367,17 @@ datos_anchos <- dat_hosp_imss[,c(3,4,6)] %>%
                 mutate(Fecha = as.character(FECHA_INGRESO))%>% 
                 select(-FECHA_INGRESO)%>%
                 relocate(Fecha, .before=Azcapotzalco)%>% 
-                slice(30, 29, 1:(n()))%>% 
+                arrange(Fecha) %>%
                 mutate(across(where(is.numeric), ~ coalesce(.x, 0)))
 
-dim(datos_anchos)
+str(datos_anchos)
 
+View(datos_anchos)
 
 xtable(datos_anchos) # Resultados en formato latex
-dim(datos_anchos)
 
 
+#------------------------------------------------
 # Evaluación de la dependencia temporal
 
 dat <- data.frame(X=rep(0,16,),pV=rep(0,16))
@@ -396,112 +398,39 @@ res<-dat%>%
 
 
 
-xtable(res,digits = 5)
-
-# %%%%%%%%%%%%%%%%
+xtable(res,digits = 3)
 
 
-#--- Gráficos de las máximos por alcaldías
+################33
+
+class(datos_anchos)
 
 
-CVE_MUN_lev<-dat_hosp_imss%>%         
-             group_by(CVE_MUN)%>%
-             dplyr::summarize(VMax=last(VMax, order_by=MesDia), .groups="drop" )%>%
-             arrange(desc(mean(VMax)))%>%
-             pull(CVE_MUN) # extrae un columna
-
-#--- Maximos por alcaldia
-
-lista_max<-list()
-
-for(i in 2:17)
-{
-   lista_max[[i]]<-dat_hosp_imss%>%
-                 filter(CVE_MUN==i)
-                
-}
-
-lista_max
-
-#--- Verificando si se tienen todos los grupos
-
-a<-as.numeric(shape_cdmx$CVE_MUN)
-
-b<-dat_hosp_imss$CVE_MUN
-
-setdiff(a,b) # Grupos que faltam
+write_xlsx(datos_anchos, "C:/Documetos MGM_OS_Dell/Documentos Maria_Dell_OS/Analisis de valores extremos espacial/Articulo_valores extremos/data_1st.xlsx")
 
 
-#--- Base de datos construida
 
-DatMax<-dat_hosp_imss
-
-View(dat_hosp_imss)
-
-matrix_max<-matrix(0,30,16)
-
-
-loc<-as.numeric(levels(as.factor(dat_hosp_imss$CVE_MUN)))
-
-pro<-30
-j<-1
-
-for(i in loc)
-   {
-
-     if(length(DatMax[DatMax$CVE_MUN==i,]$VMax)==pro)
-        {
-         matrix_max[ ,j]<-DatMax[DatMax$CVE_MUN==i,]$VMax  # Selecciona la variable VMax
-        }
-     else
-       {
-          a<-as.matrix(DatMax[DatMax$CVE_MUN==i,]$VMax,nrow=1)
-
-          while(dim(a)[1]<pro)
-           {
-             a <-  rbind(a,0)
-           }
-
-        matrix_max[ ,j]<-a
-       }
-
-     j<-j+1  
-   }
-
-
-dat<-matrix_max
-dat
-
-apply(dat,2,sum)
-
-
-dat_save<-data.frame(dat)
-
-
-write_xlsx(dat_save, "C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de valores extremos espacial\\Articulo_valores extremos\\data_1st.xlsx")
-
-
+################### Figure 4
 #-- Datos
+
+dat<-as.matrix( datos_anchos[,-1])
 
 dat_olamax<- data.frame(long=centroides_mun$long, 
                         lat=centroides_mun$lat,
-                        Max=apply(dat, 2,max))
+                        Max=apply(dat, 2,max))  # uso de la matriz de datos
 
 dim(dat_olamax)
 
+
 #--- Etiquetas 
 
-
 centroides_shape<-st_coordinates(st_centroid(shape_cdmx))
-
 
 nom_municipios<-data.frame(long=centroides_shape[,1],
                            lat=centroides_shape[,2],
                            lab=nom_alcaldias,
                            CVE_MUN=shape_cdmx$CVE_MUN)
 
-
-length(nom_alcaldias)
 
 shape_cdmx%>%
           ggplot()+
@@ -549,8 +478,8 @@ hyper$betaIcov  <- list(loc   = solve(diag(c(10, 10))),    #
 
 # sigma
 
-hyper$sills     <- list(loc   = c(1, 20),     # InvGamma(a, b)   sigma_mu
-                        scale = c(1, 20),     # InvGamma(a, b)   sigma_tau
+hyper$sills     <- list(loc   = c(1, 20),     # InvGamma(a, b)   sigma_mu   (1,20) (1,1)*  0.110
+                        scale = c(1, 20),     # InvGamma(a, b)   sigma_tau 
                         shape = c(1, 20))     # InvGamma(a, b)   sigma_xi
 
 #  phi
@@ -789,9 +718,10 @@ round(DIC(mc_sen2),3)
 
 
 #########################################
+round(DIC(mc1),3)
 
 mc1<- mc_sen1
-round(DIC(mc1),3)
+
 
 loc1_beta0  <-mc1$chain.loc[,1]
 loc1_beta1  <-mc1$chain.loc[,2]
@@ -895,7 +825,7 @@ res_cri<-summarise_draws(muestras_beta, rhat, ess_bulk, ess_tail,mcse_mean )
 
 va_min<-round(apply(res_cri[,3:4],1,min)/10000,3)
 
-res_fin<-cbind(esti,res_cri[,2:5], va_min )
+res_fin<-cbind(esti,res_cri[,2:5], va_min );res_fin
 
 xtable(res_fin,digits = 3) # Resultados en formato latex
 
