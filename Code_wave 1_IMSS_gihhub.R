@@ -478,9 +478,9 @@ hyper$betaIcov  <- list(loc   = solve(diag(c(10, 10))),    #
 
 # sigma
 
-hyper$sills     <- list(loc   = c(1, 20),     # InvGamma(a, b)   sigma_mu   (1,20) (1,1)*  0.110
-                        scale = c(1, 20),     # InvGamma(a, b)   sigma_tau 
-                        shape = c(1, 20))     # InvGamma(a, b)   sigma_xi
+hyper$sills     <- list(loc   = c(1, 1),     # InvGamma(a, b)   sigma_mu   (1,20) 0.046 (1,1)*  0.110
+                        scale = c(1, 1),     # InvGamma(a, b)   sigma_tau 
+                        shape = c(1, 1))     # InvGamma(a, b)   sigma_xi
 
 #  phi
 hyper$ranges    <- list(loc   = c(1, 10),     # Gamma    phi_mu      Gamma(1, 10)=Exp(10)

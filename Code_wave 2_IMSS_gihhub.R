@@ -5,6 +5,7 @@ Versión usada  del R: 4.3.2
 
 ################## Valores extremos
 
+rm(list=ls())
 library(SpatialExtremes)
 library(timetk) #     summarise_by_time
 library("fields") #no instalado
@@ -52,7 +53,7 @@ library(posterior)
 library(coda)
 library(metR)  # geom_contour_fill()
 library(pracma)
-
+library(snpar)       # runs.test
 
 
 # --- Shape del estado con sus municipios
@@ -74,8 +75,6 @@ shape_muni_df<-ggplot2::fortify(shape_muni,region="CVE_MUN") # E muy importante 
 shape_cdmx <-st_read("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de valores extremos espacial\\conjunto_de_datos", layer="09mun")
 shape_cdmx <- st_transform(shape_cdmx, sp::CRS("+proj=longlat +datum=WGS84 +no_defs"))
 shape_cdmx_df<-ggplot2::fortify(shape_cdmx, region="CVE_MUN")
-
-
 
 
 
@@ -310,28 +309,30 @@ View(datos_ancho)
 # Pasar a formato ancho
 
 
-
 View(dat_hosp_imss)
 
 
-datos_anchos <- dat_hosp_imss[,c(3,4,6)] %>%
+datos_anchos <- dat_hosp_imss[,c(3,4,5)] %>%
                 pivot_wider(
                              names_from = Alcaldias,   
                              values_from = VMax   
                            )%>%
                 mutate(Fecha = as.character(FECHA_INGRESO))%>% 
-                select(-FECHA_INGRESO)%>%
+                dplyr::select(- FECHA_INGRESO)%>%
                 relocate(Fecha, .before=Azcapotzalco)%>% 
-                slice(30, 29, 1:(n()))%>% 
+                arrange(Fecha)%>%
                 mutate(across(where(is.numeric), ~ coalesce(.x, 0)))
 
-dim(datos_anchos)
-
+View(datos_anchos)
 
 xtable(datos_anchos) # Resultados en formato latex
 dim(datos_anchos)
 
+write_xlsx(datos_anchos, "C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de valores extremos espacial\\Articulo_valores extremos\\data_2nd.xlsx")
 
+
+
+##################################################
 # Evaluación de la dependencia temporal
 
 dat <- data.frame(X=rep(0,16,),pV=rep(0,16))
@@ -352,84 +353,19 @@ res<-dat%>%
 
 
 
-xtable(res,digits = 5)
+xtable(res, digits = 5)
 
 
-
-
-# Identificación de los máximos
-
-
-lista_max<-list()
-
-for(i in 2:17)
-{
-   lista_max[[i]]<-dat_hosp_imss%>%
-                 filter(CVE_MUN==i)
-                
-}
-
-lista_max
-
-
-#--- Verificando si se tienen todos los grupos
-
-a<-as.numeric(centroides_mun$CVE_MUN)
-
-b<-dat_hosp_imss$CVE_MUN
-
-setdiff(a,b) # Grupos que faltam
-
+############################################3
 
 #--- Base de datos construida
 
-DatMax<-dat_hosp_imss
 
-matrix_max <- matrix(0,30,16)
+dat<-as.matrix(datos_anchos[,-1])
 
-
-loc<-as.numeric(levels(as.factor(dat_hosp_imss$CVE_MUN)))
-
-pro<-30
-j<-1
-
-for(i in loc)
-   {
-
-     if(length(DatMax[DatMax$CVE_MUN==i,]$VMax)==pro)
-        {
-         matrix_max[ ,j]<-DatMax[DatMax$CVE_MUN==i,]$VMax  # Selecciona la variable VMax
-        }
-     else
-       {
-          a<-as.matrix(DatMax[DatMax$CVE_MUN==i,]$VMax,nrow=1)
-
-          while(dim(a)[1]<pro)
-           {
-             a <-  rbind(a,0)
-           }
-
-        matrix_max[ ,j]<-a
-       }
-
-     j<-j+1  
-   }
-
-
-dat<-matrix_max
-dat
-
-
-
-dat_save<-data.frame(dat)
-
-write_xlsx(dat_save, "C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de valores extremos espacial\\Articulo_valores extremos\\data_2nd.xlsx")
-
-
-
-#-- Datos
-
-dat_olamax<- data.frame(long=centroides_mun$long, lat=centroides_mun$lat, Max=apply(dat, 2,max))
+dat_olamax<- data.frame(long=centroides_mun$long,
+                        lat=centroides_mun$lat,
+                        Max=apply(dat, 2,max))
 
 
 #--- Etiquetas 
@@ -469,7 +405,6 @@ ggsave("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de valores
 #---------- Ajustando el  modelo
 
 
-
 coord <- cbind(lon =centroides_mun$long, lat =centroides_mun$lat)
 
 #--- Spatial linear model for the mean of the latent processes
@@ -503,7 +438,7 @@ hyper$betaIcov  <- list(loc   = solve(diag(c(10, 10))),    #
 
 # sigma
 
-hyper$sills     <- list(loc   = c(1, 20),     # InvGamma(a, b)   sigma_mu   Valor bueno: 1,20
+hyper$sills     <- list(loc   = c(1, 20),     # InvGamma(a, b)   sigma_mu   Valor bueno: (1,20)
                         scale = c(1, 20),     # InvGamma(a, b)   sigma_tau
                         shape = c(1, 20))     # InvGamma(a, b)   sigma_xi
 
@@ -525,7 +460,7 @@ set.seed(100)
 prop <- list( gev     = c(0.5, 0.5, 0.5),  # betas
               sills   = c(1, 1, 1),        # <-- CAMBIO: 0 evita que 'shape1_sill' varíe
               ranges  = c(1, 1, 1),        # Parameter: phi  
-              smooths = c(0.5, 0.5, 0.5 ))   # 
+              smooths = c(0.5, 0.5, 0.5))   # 
                          # eta, tau, xi
                          # location scale, shape 
 
@@ -863,7 +798,7 @@ res_cri<-summarise_draws(muestras_beta, rhat, ess_bulk, ess_tail,mcse_mean )
 
 va_min<-round(apply(res_cri[,3:4],1,min)/10000,3)
 
-res_fin<-cbind(esti,res_cri[,2:5], va_min )
+res_fin<-cbind(esti,res_cri[,2:5], va_min );res_fin
 
 xtable(res_fin,digits = 3) # Resultados en formato latex
 
@@ -912,8 +847,7 @@ dev.off()
 
 postscript("C:\\Documetos MGM_OS_Dell\\Documentos Maria_Dell_OS\\Analisis de valores extremos espacial\\Articulo_valores extremos\\Fig_12.eps",
            onefile = FALSE ,      # Obligatorio para formato EPS correcto
-           horizontal = FALSE
-)
+           horizontal = FALSE)
 par(mfrow = c(3, 3))
 hist(loc1_sill, col="darkblue",  cex.main = 3, xlab="", main=expression(sigma[eta]))
 hist(loc1_range,col="darkblue", cex.main = 3,xlab="", main=expression(phi[eta]))
